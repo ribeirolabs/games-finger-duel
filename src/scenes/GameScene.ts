@@ -19,7 +19,6 @@ export class GameScene extends Phaser.Scene {
   private turnIndicator!: Phaser.GameObjects.Container;
   private turnIndicatorArrow!: Phaser.GameObjects.Text;
   private backgroundTint!: Phaser.GameObjects.Graphics;
-  private gameOverModal: Phaser.GameObjects.Container | null = null;
   private screenShakeIntensity: number = 0;
   private lastTapTime: number = 0;
   private lastTapHand: string = '';
@@ -37,10 +36,10 @@ export class GameScene extends Phaser.Scene {
     this.createTurnIndicator();
     this.createHandSprites();
     this.createDragLine();
-    this.createGameOverModal();
 
     this.setupInput();
     this.updateTurnIndicator();
+    this.setupHtmlModals();
   }
 
   private createBackground(): void {
@@ -160,61 +159,27 @@ export class GameScene extends Phaser.Scene {
     await soundManager.initialize();
   }
 
-  private createGameOverModal(): void {
-    this.gameOverModal = this.add.container(this.scale.width / 2, this.scale.height / 2);
-    this.gameOverModal.setDepth(200);
-    this.gameOverModal.setScale(0);
-    this.gameOverModal.setVisible(false);
+  private setupHtmlModals(): void {
+    const instructionsModal = document.getElementById('instructions-modal');
+    const instructionsClose = document.getElementById('instructions-close');
+    const gameOverModal = document.getElementById('gameover-modal');
+    const restartBtn = document.getElementById('restart-btn');
 
-    const overlay = this.add.graphics();
-    overlay.fillStyle(0x000000, 0.7);
-    overlay.fillRect(-this.scale.width / 2, -this.scale.height / 2, this.scale.width, this.scale.height);
-    this.gameOverModal.add(overlay);
+    const hasSeenInstructions = localStorage.getItem('finger-duel-instructions');
+    if (!hasSeenInstructions && instructionsModal) {
+      instructionsModal.classList.add('active');
+    }
 
-    const modal = this.add.graphics();
-    modal.fillStyle(0x2d1b4e, 1);
-    modal.lineStyle(4, 0xffffff, 1);
-    modal.fillRoundedRect(-180, -120, 360, 240, 20);
-    modal.strokeRoundedRect(-180, -120, 360, 240, 20);
-    this.gameOverModal.add(modal);
+    instructionsClose?.addEventListener('click', () => {
+      localStorage.setItem('finger-duel-instructions', 'true');
+      instructionsModal?.classList.remove('active');
+    });
 
-    const winnerText = this.add.text(0, -60, 'WINNER!', {
-      fontSize: '42px',
-      fontStyle: 'bold',
-      color: '#ffd93d',
-      stroke: '#000000',
-      strokeThickness: 4,
-    }).setOrigin(0.5);
-    this.gameOverModal.add(winnerText);
-
-    const restartBtn = this.add.graphics();
-    restartBtn.fillStyle(0x6bcb77, 1);
-    restartBtn.fillRoundedRect(-100, 20, 200, 50, 10);
-    this.gameOverModal.add(restartBtn);
-
-    const restartText = this.add.text(0, 45, 'PLAY AGAIN', {
-      fontSize: '24px',
-      fontStyle: 'bold',
-      color: '#ffffff',
-    }).setOrigin(0.5);
-    this.gameOverModal.add(restartText);
-
-    const restartZone = this.add.zone(0, 45, 200, 50).setInteractive({ useHandCursor: true });
-    restartZone.on('pointerdown', () => {
+    restartBtn?.addEventListener('click', () => {
       this.initializeSound();
+      gameOverModal?.classList.remove('active');
       this.restartGame();
     });
-    restartZone.on('pointerover', () => {
-      restartBtn.clear();
-      restartBtn.fillStyle(0x7ddf88, 1);
-      restartBtn.fillRoundedRect(-100, 20, 200, 50, 10);
-    });
-    restartZone.on('pointerout', () => {
-      restartBtn.clear();
-      restartBtn.fillStyle(0x6bcb77, 1);
-      restartBtn.fillRoundedRect(-100, 20, 200, 50, 10);
-    });
-    this.gameOverModal.add(restartZone);
   }
 
   private setupInput(): void {
@@ -637,38 +602,15 @@ export class GameScene extends Phaser.Scene {
     soundManager.playVictorySound();
     this.cameras.main.shake(500, 0.02);
 
-    const modal = this.gameOverModal!;
-    modal.setVisible(true);
-
-    const winnerText = modal.list.find(child => child instanceof Phaser.GameObjects.Text && child.text === 'WINNER!') as Phaser.GameObjects.Text;
-    if (winnerText) {
-      winnerText.setColor(winner === 1 ? '#ff6b6b' : '#4ecdc4');
-      winnerText.setText(winner === 1 ? 'PLAYER 1 WINS!' : 'PLAYER 2 WINS!');
-    }
+    (window as any).showGameOver?.(winner);
 
     this.particleManager.createVictoryEffect(this.scale.width / 2, this.scale.height / 2);
-
-    this.tweens.add({
-      targets: modal,
-      scale: 1,
-      duration: 400,
-      ease: 'Back.easeOut',
-    });
   }
 
   private restartGame(): void {
-    this.tweens.add({
-      targets: this.gameOverModal,
-      scale: 0,
-      duration: 200,
-      ease: 'Back.easeIn',
-      onComplete: () => {
-        this.gameOverModal?.setVisible(false);
-        this.gameState.reset();
-        this.createHandSprites();
-        this.updateTurnIndicator();
-      },
-    });
+    this.gameState.reset();
+    this.createHandSprites();
+    this.updateTurnIndicator();
   }
 
   update(_time: number, delta: number): void {

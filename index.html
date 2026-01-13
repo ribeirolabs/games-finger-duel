@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Finger Duel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * {
       margin: 0;
@@ -26,10 +27,99 @@
       justify-content: center;
       align-items: center;
     }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      z-index: -1;
+    }
   </style>
 </head>
 <body>
   <div id="game-container"></div>
+
+  <!-- Instructions Modal -->
+  <div id="instructions-modal" class="modal-overlay">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content bg-gradient-to-br from-purple-900 to-indigo-900 rounded-2xl p-6 max-w-sm mx-4 border-2 border-white/20 shadow-2xl">
+      <h2 class="text-2xl font-bold text-white mb-4 text-center">How to Play</h2>
+      <div class="text-gray-200 space-y-3 mb-6">
+        <p class="flex items-start gap-2">
+          <span class="text-yellow-400 text-xl">👆</span>
+          <span><strong>Drag</strong> your <span class="text-red-400 font-bold">RED</span> hand to <span class="text-cyan-400 font-bold">BLUE</span>'s hand to attack</span>
+        </p>
+        <p class="flex items-start gap-2">
+          <span class="text-green-400 text-xl">👆👆</span>
+          <span><strong>Double-tap</strong> your <span class="text-red-400 font-bold">RED</span> hand to split and reactivate a disabled hand</span>
+        </p>
+        <p class="flex items-start gap-2">
+          <span class="text-red-400 text-xl">✋</span>
+          <span>Hand reaches <strong>5</strong> fingers = disabled!</span>
+        </p>
+        <p class="flex items-start gap-2">
+          <span class="text-purple-400 text-xl">🏆</span>
+          <span><strong>Win</strong> by disabling both opponent hands</span>
+        </p>
+      </div>
+      <button id="instructions-close" class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-lg">
+        Got it!
+      </button>
+    </div>
+  </div>
+
+  <!-- Game Over Modal -->
+  <div id="gameover-modal" class="modal-overlay">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content bg-gradient-to-br from-purple-900 to-indigo-900 rounded-2xl p-8 max-w-sm mx-4 border-2 border-white/20 shadow-2xl text-center">
+      <h2 id="winner-text" class="text-3xl font-bold text-yellow-400 mb-2">WINNER!</h2>
+      <div class="text-6xl mb-6">🏆</div>
+      <button id="restart-btn" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-lg">
+        Play Again
+      </button>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.ts"></script>
+  <script>
+    // Expose modal controls globally for Phaser
+    window.showInstructions = function() {
+      document.getElementById('instructions-modal').classList.add('active');
+    };
+    window.hideInstructions = function() {
+      document.getElementById('instructions-modal').classList.remove('active');
+    };
+    window.showGameOver = function(winner) {
+      const modal = document.getElementById('gameover-modal');
+      const winnerText = document.getElementById('winner-text');
+      winnerText.textContent = winner === 1 ? 'RED WINS!' : 'BLUE WINS!';
+      modal.classList.add('active');
+    };
+    window.hideGameOver = function() {
+      document.getElementById('gameover-modal').classList.remove('active');
+    };
+  </script>
 </body>
 </html>
