@@ -66,14 +66,18 @@
     <div class="modal-backdrop"></div>
     <div class="modal-content bg-gradient-to-br from-purple-900 to-indigo-900 rounded-2xl p-6 max-w-sm mx-4 border-2 border-white/20 shadow-2xl">
       <h2 class="text-2xl font-bold text-white mb-4 text-center">How to Play</h2>
-      <div class="text-gray-200 space-y-3 mb-6">
+      <div class="text-gray-200 space-y-4 mb-6">
+        <p class="flex items-start gap-2">
+          <span class="text-yellow-400 text-xl">🎮</span>
+          <span><strong>Local Multiplayer!</strong> Two players on the same device.</span>
+        </p>
         <p class="flex items-start gap-2">
           <span class="text-yellow-400 text-xl">👆</span>
-          <span><strong>Drag</strong> your <span class="text-red-400 font-bold">RED</span> hand to <span class="text-cyan-400 font-bold">BLUE</span>'s hand to attack</span>
+          <span><strong>Drag</strong> your hand to opponent's hand to attack</span>
         </p>
         <p class="flex items-start gap-2">
           <span class="text-green-400 text-xl">👆👆</span>
-          <span><strong>Double-tap</strong> your <span class="text-red-400 font-bold">RED</span> hand to split and reactivate a disabled hand</span>
+          <span><strong>Double-tap</strong> your hand to split and reactivate a disabled hand</span>
         </p>
         <p class="flex items-start gap-2">
           <span class="text-red-400 text-xl">✋</span>
@@ -83,6 +87,16 @@
           <span class="text-purple-400 text-xl">🏆</span>
           <span><strong>Win</strong> by disabling both opponent hands</span>
         </p>
+        <div class="flex gap-4 justify-center mt-4">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-red-500"></div>
+            <span class="text-sm text-gray-300">Player 1 (Top)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-cyan-500"></div>
+            <span class="text-sm text-gray-300">Player 2 (Bottom)</span>
+          </div>
+        </div>
       </div>
       <button id="instructions-close" class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-lg">
         Got it!
