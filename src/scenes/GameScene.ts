@@ -294,7 +294,7 @@ export class GameScene extends Phaser.Scene {
       const targetKey = `${opponentPrefix}-${targetHand}`;
       const container = this.handSprites.get(targetKey);
       if (container && this.gameState.isValidAttack(sourceHand, targetHand)) {
-        this.addGlowEffect(container, 0x00ff00);
+        this.addGlowEffect(container, 0x4ade80);
       }
     }
   }
@@ -357,7 +357,7 @@ export class GameScene extends Phaser.Scene {
           const [, hand] = key.split('-') as [string, 'left' | 'right'];
           if (this.currentDragHand !== null && this.gameState.isValidAttack(this.currentDragHand, hand)) {
             this.dragLine.clear();
-            this.dragLine.lineStyle(6, 0x00ff00, 0.8);
+            this.dragLine.lineStyle(6, 0x4ade80, 0.8);
             this.dragLine.beginPath();
             this.dragLine.moveTo(this.dragHand!.x, this.dragHand!.y);
             this.dragLine.lineTo(pointer.x, pointer.y);
