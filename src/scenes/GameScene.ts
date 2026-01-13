@@ -136,6 +136,14 @@ export class GameScene extends Phaser.Scene {
     container.add(fingersText);
     this.fingerTexts.set(key, fingersText);
 
+    const disabledX = this.add.text(0, 0, '✕', {
+      fontSize: '64px',
+      fontStyle: 'bold',
+      color: '#333333',
+    }).setOrigin(0.5).setVisible(false);
+    container.add(disabledX);
+    container.setData('disabledX', disabledX);
+
     const hitRadius = 120;
 
     const hitArea = this.add.graphics();
@@ -518,6 +526,10 @@ export class GameScene extends Phaser.Scene {
       if (state.isAlive) {
         text?.setText(state.fingers.toString());
         text?.setColor('#ffffff');
+        text?.setVisible(true);
+
+        const disabledX = container.getData('disabledX') as Phaser.GameObjects.Text | undefined;
+        disabledX?.setVisible(false);
 
         this.tweens.add({
           targets: container,
@@ -531,12 +543,11 @@ export class GameScene extends Phaser.Scene {
         glow?.fillStyle(playerColor, 0.3);
         glow?.fillCircle(0, 0, 70);
       } else {
-        if (text) {
-          text.setText('✕');
-          text.setColor('#666666');
-          text.setPosition(0, 0);
-          text.setScale(1);
-        }
+        text?.setText('');
+        text?.setVisible(false);
+
+        const disabledX = container.getData('disabledX') as Phaser.GameObjects.Text | undefined;
+        disabledX?.setText('✕').setVisible(true);
 
         this.particleManager.createDeathEffect(container.x, container.y);
         soundManager.playDeathSound();
