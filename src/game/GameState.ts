@@ -176,7 +176,12 @@ export class GameState {
     const p1Alive = this.getAliveHands(this.player1).length > 0;
     const p2Alive = this.getAliveHands(this.player2).length > 0;
 
-    if (!p1Alive || !p2Alive) {
+    if (!p1Alive && p2Alive) {
+      this.phase = 'gameOver';
+      return true;
+    }
+
+    if (!p2Alive && p1Alive) {
       this.phase = 'gameOver';
       return true;
     }
