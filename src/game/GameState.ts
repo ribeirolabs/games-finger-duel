@@ -5,6 +5,7 @@ export class GameState {
   private player2: PlayerState;
   private currentPlayerIndex: 1 | 2;
   private phase: GamePhase;
+  private lastStarter: 1 | 2 = 1;
 
   constructor() {
     this.player1 = this.createPlayer(1);
@@ -205,9 +206,11 @@ export class GameState {
   }
 
   reset(): void {
+    this.currentPlayerIndex = this.lastStarter === 1 ? 2 : 1;
+    this.lastStarter = this.currentPlayerIndex;
+
     this.player1 = this.createPlayer(1);
     this.player2 = this.createPlayer(2);
-    this.currentPlayerIndex = 1;
     this.phase = 'playing';
   }
 
