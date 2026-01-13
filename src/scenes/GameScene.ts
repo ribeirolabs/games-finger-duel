@@ -89,6 +89,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createHandSprites(): void {
+    this.handSprites.forEach((container) => {
+      container.destroy();
+    });
     this.handSprites.clear();
     this.fingerTexts.clear();
 
@@ -114,12 +117,14 @@ export class GameScene extends Phaser.Scene {
     const glowRadius = 85;
 
     const glow = this.add.graphics();
+    glow.setDepth(0);
     glow.fillStyle(playerColor, 0.3);
     glow.fillCircle(0, 0, glowRadius);
     container.add(glow);
     container.setData('glow', glow);
 
     const base = this.add.graphics();
+    base.setDepth(1);
     base.fillStyle(playerColor, 1);
     base.fillCircle(0, 0, baseRadius);
     base.fillStyle(0xffffff, 0.2);
@@ -132,7 +137,7 @@ export class GameScene extends Phaser.Scene {
       color: '#ffffff',
       stroke: '#000000',
       strokeThickness: 3,
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(3);
     container.add(fingersText);
     this.fingerTexts.set(key, fingersText);
 
@@ -140,13 +145,14 @@ export class GameScene extends Phaser.Scene {
       fontSize: '64px',
       fontStyle: 'bold',
       color: '#333333',
-    }).setOrigin(0.5).setVisible(false);
+    }).setOrigin(0.5).setDepth(3).setVisible(false);
     container.add(disabledX);
     container.setData('disabledX', disabledX);
 
     const hitRadius = 120;
 
     const hitArea = this.add.graphics();
+    hitArea.setDepth(2);
     hitArea.fillStyle(player === 'p1' ? 0xff6b6b : 0x4ecdc4, 0);
     hitArea.fillCircle(0, 0, hitRadius);
     container.add(hitArea);
