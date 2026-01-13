@@ -121,6 +121,7 @@ export class GameState {
       target.fingers = total % 5;
 
       if (total === 5) {
+        target.fingers = 0;
         target.isAlive = false;
       }
 

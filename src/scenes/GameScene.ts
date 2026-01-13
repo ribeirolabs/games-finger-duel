@@ -531,8 +531,12 @@ export class GameScene extends Phaser.Scene {
         glow?.fillStyle(playerColor, 0.3);
         glow?.fillCircle(0, 0, 70);
       } else {
-        text?.setText('✕');
-        text?.setColor('#666666');
+        if (text) {
+          text.setText('✕');
+          text.setColor('#666666');
+          text.setPosition(0, 0);
+          text.setScale(1);
+        }
 
         this.particleManager.createDeathEffect(container.x, container.y);
         soundManager.playDeathSound();
